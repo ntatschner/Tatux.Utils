@@ -110,11 +110,11 @@ function New-ModuleCustomTemplate {
 					$ReadmePath = Join-Path -Path $FullPath -ChildPath "README.md"
 					Set-Content -Value "# $Name $Directory" -Path $ReadmePath -ErrorAction Stop
 				}
-				Copy-Item -Path "$Templates\Get-ModuleConfig.ps1" -Destination "$ParentPath\Private" 
-				Copy-Item -Path "$Templates\Set-ModuleConfig.ps1" -Destination "$ParentPath\Public" 
-				Copy-Item -Path "$Templates\Get-ModuleStatus.ps1" -Destination "$ParentPath\Private" 
-				Copy-Item -Path "$Templates\Get-ParameterValues.ps1" -Destination "$ParentPath\Private"
-				Copy-Item -Path "$Templates\Module.Defaults.json" -Destination "$ParentPath\Config"
+				Copy-Item -Path "$Templates\Get-ModuleConfig.ps1" -Destination "$ParentPath\Private\" 
+				Copy-Item -Path "$Templates\Set-ModuleConfig.ps1" -Destination "$ParentPath\Public\" 
+				Copy-Item -Path "$Templates\Get-ModuleStatus.ps1" -Destination "$ParentPath\Private\" 
+				Copy-Item -Path "$Templates\Get-ParameterValues.ps1" -Destination "$ParentPath\Private\"
+				Copy-Item -Path "$Templates\Module.Defaults.json" -Destination "$ParentPath\Config\"
 			}
 			catch {
 				Write-Verbose "Failed to create path: $FullPath."
