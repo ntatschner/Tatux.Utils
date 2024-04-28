@@ -1,9 +1,9 @@
 #region get public and private function definition files.
-$Public = @(
-    Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction SilentlyContinue
+$Public  = @(
+    Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -Exclude "*.Tests.ps1" -ErrorAction SilentlyContinue
 )
 $Private = @(
-    Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -ErrorAction SilentlyContinue
+    Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -Exclude "*.Tests.ps1" -ErrorAction SilentlyContinue
 )
 #endregion
 
@@ -11,10 +11,9 @@ $Private = @(
 foreach ($Function in @($Public + $Private)) {
     $FunctionPath = $Function.fullname
     try {
-        . $FunctionPath # dot source function
-    }
-    catch {
-        Write-Error -Message "Failed to import function at $($FunctionPath): $_"
+	. $FunctionPath # dot source function
+    } catch {
+	Write-Error -Message "Failed to import function at $($FunctionPath): $_"
     }
 }
 #endregion
@@ -33,4 +32,8 @@ $Time = Get-Date -UFormat "%H:%M:%S"
 Export-ModuleMember -Function $Public.Basename
 #endregion
 
-# -Path "$PSScriptRoot\$(Split-Path -Path $PSCommandPath -Leaf)"
+# Module Config setup and import
+$CurrentConfig = Get-ModuleConfig
+if ($CurrentConfig.UpdateWarning -eq 'True') {
+    Get-ModuleStatus -ShowMessage -ModuleName $CurrentConfig.ModuleName -ModulePath $CurrentConfig.ModulePath
+}
