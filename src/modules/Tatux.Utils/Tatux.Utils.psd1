@@ -4,7 +4,7 @@
 #RootModule = 'Tatux.Utils'
 
 # Version number of this module.
-ModuleVersion = '0.2.31'
+ModuleVersion = '0.2.32'
 
 # ID used to uniquely identify this module
 GUID = '061256e7-9e17-4571-9481-baca2e0bc13e'
@@ -43,7 +43,7 @@ PrivateData = @{
 
     PSData = @{
         # ReleaseNotes of this module
-        ReleaseNotes = 'Updated most of the modules and added new ones.'
+        ReleaseNotes = 'Updated the module config logic.'
     } # End of PSData hashtable
 
 } # End of PrivateData hashtable
