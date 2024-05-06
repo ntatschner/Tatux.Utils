@@ -43,7 +43,7 @@ if ($CurrentConfig.BasicTelemetry -eq 'True') {
     -ModulePath $CurrentConfig.ModulePath `
     -ModuleVersion $CurrentConfig.ModuleVersion `
     -CommandName $MyInvocation.MyCommand.Name `
-    -Stage 'Module-Load'
+    -Stage 'Module-Load' `
     -URI 'https://telemetry.tatux.in/api/telemetry' `
     -ClearTimer
 } else {
@@ -51,7 +51,7 @@ if ($CurrentConfig.BasicTelemetry -eq 'True') {
     -ModulePath $CurrentConfig.ModulePath `
     -ModuleVersion $CurrentConfig.ModuleVersion `
     -CommandName $MyInvocation.MyCommand.Name `
-    -Stage 'Module-Load'
+    -Stage 'Module-Load' `
     -URI 'https://telemetry.tatux.in/api/telemetry' `
     -ClearTimer
 }
