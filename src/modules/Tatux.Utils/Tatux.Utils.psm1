@@ -44,14 +44,16 @@ if ($CurrentConfig.BasicTelemetry -eq 'True') {
     -ModuleVersion $CurrentConfig.ModuleVersion `
     -CommandName $MyInvocation.MyCommand.Name `
     -Stage 'Module-Load'
-    -URI 'https://telemetry.tatux.in/api/telemetry'
+    -URI 'https://telemetry.tatux.in/api/telemetry' `
+    -ClearTimer
 } else {
     Invoke-TelemetryCollection -ModuleName $CurrentConfig.ModuleName `
     -ModulePath $CurrentConfig.ModulePath `
     -ModuleVersion $CurrentConfig.ModuleVersion `
     -CommandName $MyInvocation.MyCommand.Name `
     -Stage 'Module-Load'
-    -URI 'https://telemetry.tatux.in/api/telemetry'
+    -URI 'https://telemetry.tatux.in/api/telemetry' `
+    -ClearTimer
 }
 
 if ($CurrentConfig.UpdateWarning -eq 'True') {
