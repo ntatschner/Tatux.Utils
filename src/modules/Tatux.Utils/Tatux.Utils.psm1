@@ -32,8 +32,28 @@ $Time = Get-Date -UFormat "%H:%M:%S"
 Export-ModuleMember -Function $Public.Basename
 #endregion
 
+
+
 # Module Config setup and import
 $CurrentConfig = Get-ModuleConfig
+
+if ($CurrentConfig.BasicTelemetry -eq 'True') {
+    Invoke-TelemetryCollection -Minimal `
+    -ModuleName $CurrentConfig.ModuleName `
+    -ModulePath $CurrentConfig.ModulePath `
+    -ModuleVersion $CurrentConfig.ModuleVersion `
+    -CommandName $MyInvocation.MyCommand.Name `
+    -Stage 'Module-Load'
+    -URI 'https://telemetry.tatux.in/api/telemetry'
+} else {
+    Invoke-TelemetryCollection -ModuleName $CurrentConfig.ModuleName `
+    -ModulePath $CurrentConfig.ModulePath `
+    -ModuleVersion $CurrentConfig.ModuleVersion `
+    -CommandName $MyInvocation.MyCommand.Name `
+    -Stage 'Module-Load'
+    -URI 'https://telemetry.tatux.in/api/telemetry'
+}
+
 if ($CurrentConfig.UpdateWarning -eq 'True') {
     Get-ModuleStatus -ShowMessage -ModuleName $CurrentConfig.ModuleName -ModulePath $CurrentConfig.ModulePath
 }

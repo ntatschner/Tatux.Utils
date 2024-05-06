@@ -4,7 +4,7 @@
 #RootModule = 'Tatux.Utils'
 
 # Version number of this module.
-ModuleVersion = '0.2.32'
+ModuleVersion = '0.2.34'
 
 # ID used to uniquely identify this module
 GUID = '061256e7-9e17-4571-9481-baca2e0bc13e'
@@ -38,12 +38,14 @@ AliasesToExport = @()
 
 NestedModules = @('Tatux.Utils.psm1')
 
+RequiredModules = @('tatux.telemetry')
+
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
 
     PSData = @{
         # ReleaseNotes of this module
-        ReleaseNotes = 'Updated the module config logic.'
+        ReleaseNotes = 'Added Telemetry and updated Module status logic.'
     } # End of PSData hashtable
 
 } # End of PrivateData hashtable

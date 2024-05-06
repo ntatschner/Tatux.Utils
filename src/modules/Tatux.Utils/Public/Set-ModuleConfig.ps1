@@ -1,5 +1,5 @@
 function Set-ModuleConfig {
-        [CmdletBinding(HelpUri = 'https://pwsh.dev.tatux.co.uk/tatux.intune.packaging/docs/Set-ModuleConfig.html')]
+        [CmdletBinding(HelpUri = 'https://pwsh.dev.tatux.co.uk/tatux.utils/docs/Set-ModuleConfig.html')]
     param(
         [Parameter(HelpMessage = "Determines if the update message is displayed when the module is loaded.")]
         [ValidateSet('True', 'False')]
@@ -12,7 +12,9 @@ function Set-ModuleConfig {
         [string]$ModuleConfigPathFile,
 
         [Parameter(HelpMessage = "Path of the module.")]
-        [string]$ModulePath
+        [string]$ModulePath,
+
+        [switch]$BasicTelemetry
     )
 
     # Test to see if module config JSON exists and create it if it doesn't
