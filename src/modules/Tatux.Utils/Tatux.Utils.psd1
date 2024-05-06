@@ -38,7 +38,7 @@ AliasesToExport = @()
 
 NestedModules = @('Tatux.Utils.psm1')
 
-RequiredModules = @( @{ModuleName = 'tatux.telemetry' ; ModuleVersion = '0.0.2'}
+RequiredModules = @( @{ModuleName = 'tatux.telemetry' ; ModuleVersion = '0.0.2'} )
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
