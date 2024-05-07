@@ -71,6 +71,23 @@ function New-ModuleCustomTemplate {
 	)
 
 	begin {
+		try {
+            $CurrentConfig = Get-ModuleConfig
+			$TelmetryArgs = @{
+				ModuleName = $CurrentConfig.ModuleName
+				ModulePath = $CurrentConfig.ModulePath
+				ModuleVersion = $CurrentConfig.ModuleVersion
+				CommandName = $MyInvocation.MyCommand.Name
+				URI = 'https://telemetry.tatux.in/api/telemetry'
+			}
+			if ($CurrentConfig.BasicTelemetry -eq 'True') {
+				$TelmetryArgs.Add('Minimal', $true)
+			}
+			Invoke-TelemetryCollection @TelmetryArgs -Stage start -ClearTimer
+        } catch {
+            Write-Verbose "Failed to load telemetry"
+        }
+
 		$Templates = "$PSScriptRoot\..\Templates"
 		$Module = "$Templates\Module.psm1"
 		$Config = "$Templates\Config.ps1"
@@ -78,7 +95,9 @@ function New-ModuleCustomTemplate {
 		$GitIgnore = "$Templates\GitIgnore"
 	}
 	process {
+		Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'
 		foreach ($Name in $Names) {
+			Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'
 			$Directories = @(
 				'Classes'
 				'Public'
@@ -119,6 +138,7 @@ function New-ModuleCustomTemplate {
 			catch {
 				Write-Verbose "Failed to create path: $FullPath."
 				$_
+				Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception $_
 				break
 			}
 	
@@ -170,5 +190,6 @@ function New-ModuleCustomTemplate {
 			Copy-Item $GitIgnore "$Path\$Name\.gitignore"
 			Write-Verbose "Copied $GitIgnore to $Path\$Name\.gitignore."
 		}
+		Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer
 	}
 }
