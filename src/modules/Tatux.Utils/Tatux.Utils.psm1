@@ -37,23 +37,20 @@ Export-ModuleMember -Function $Public.Basename
 # Module Config setup and import
 $CurrentConfig = Get-ModuleConfig
 
+$TelmetryArgs = @{
+    ModuleName = $CurrentConfig.ModuleName
+    ModulePath = $CurrentConfig.ModulePath
+    ModuleVersion = $CurrentConfig.ModuleVersion
+    CommandName = $MyInvocation.MyCommand.Name
+    URI = 'https://telemetry.tatux.in/api/telemetry'
+    ClearTimer = $true
+    Stage = 'Module-Load'
+}
+
 if ($CurrentConfig.BasicTelemetry -eq 'True') {
-    Invoke-TelemetryCollection -Minimal `
-    -ModuleName $CurrentConfig.ModuleName `
-    -ModulePath $CurrentConfig.ModulePath `
-    -ModuleVersion $CurrentConfig.ModuleVersion `
-    -CommandName $MyInvocation.MyCommand.Name `
-    -Stage 'Module-Load' `
-    -URI 'https://telemetry.tatux.in/api/telemetry' `
-    -ClearTimer
+    Invoke-TelemetryCollection -Minimal @TelmetryArgs
 } else {
-    Invoke-TelemetryCollection -ModuleName $CurrentConfig.ModuleName `
-    -ModulePath $CurrentConfig.ModulePath `
-    -ModuleVersion $CurrentConfig.ModuleVersion `
-    -CommandName $MyInvocation.MyCommand.Name `
-    -Stage 'Module-Load' `
-    -URI 'https://telemetry.tatux.in/api/telemetry' `
-    -ClearTimer
+    Invoke-TelemetryCollection @TelmetryArgs
 }
 
 if ($CurrentConfig.UpdateWarning -eq 'True') {

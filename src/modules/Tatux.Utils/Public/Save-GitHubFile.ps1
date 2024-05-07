@@ -26,15 +26,33 @@ function Save-GitHubFile {
     
     begin {
         try {
+            $CurrentConfig = Get-ModuleConfig
+			$TelmetryArgs = @{
+				ModuleName = $CurrentConfig.ModuleName
+				ModulePath = $CurrentConfig.ModulePath
+				ModuleVersion = $CurrentConfig.ModuleVersion
+				CommandName = $MyInvocation.MyCommand.Name
+				URI = 'https://telemetry.tatux.in/api/telemetry'
+			}
+			if ($CurrentConfig.BasicTelemetry -eq 'True') {
+				$TelmetryArgs.Add('Minimal', $true)
+			}
+			Invoke-TelemetryCollection @TelmetryArgs -Stage start -ClearTimer
+        } catch {
+            Write-Verbose "Failed to load telemetry"
+        }
+        try {
             Write-Verbose "Testing if $($Uri.OriginalString) is valid and pointing to 'GitHub'"
             $NetTest = $(Test-Uri -Uri $Uri)
             If ($NetTest -eq $false -or $Uri.ToString().ToLower().Contains("github") -eq $false) {
                 Write-Error "Please enter a valid URI and make sure to use a GitHub URL.."
+                Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception $_
                 break
             }
         }
         catch {
             Write-Error $_
+            Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception $_
             break
         }
         # Output Obj
@@ -44,6 +62,7 @@ function Save-GitHubFile {
     }
     
     process {
+        Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'
         switch ($PSCmdlet.ParameterSetName) { 
             'Default' {
                 if ($URI.Segments.count -gt 1) {
@@ -81,18 +100,22 @@ function Save-GitHubFile {
                                     }
                                 }
                                 Write-Verbose "Successfully downloaded $($FileName) to $($OutputDirectory)"
+                                Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer
                             }
                             else {
                                 Write-Error "Second link empty"
+                                Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception "Second link empty"
                                 break
                             }
                         }
                         else {
                             Write-Verbose "Couldn't find the file matching patten $($SearchPattern)"
+                            Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception "Couldn't find the file matching patten $($SearchPattern)"
                         }
                     }
                     Catch {
                         $_
+                        invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception $_
                     }
 
                 }
