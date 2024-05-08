@@ -4,7 +4,7 @@
 #RootModule = 'Tatux.Utils'
 
 # Version number of this module.
-ModuleVersion = '0.2.51'
+ModuleVersion = '0.2.52'
 
 # ID used to uniquely identify this module
 GUID = '061256e7-9e17-4571-9481-baca2e0bc13e'
