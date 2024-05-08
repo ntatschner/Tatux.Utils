@@ -12,6 +12,9 @@ param(
     [string]$ModuleConfigFilePath,
 
     [Parameter(HelpMessage = "Path of the module.")]
+    [string]$ModuleConfigPath,
+
+    [Parameter(HelpMessage = "Path of the module.")]
     [string]$ModulePath,
 
     [switch]$BasicTelemetry
