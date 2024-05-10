@@ -47,6 +47,22 @@ function Search-PDFDoc {
     )
 	
     BEGIN {
+        try {
+            $CurrentConfig = Get-ModuleConfig
+			$TelmetryArgs = @{
+				ModuleName = $CurrentConfig.ModuleName
+				ModulePath = $CurrentConfig.ModulePath
+				ModuleVersion = $CurrentConfig.ModuleVersion
+				CommandName = $MyInvocation.MyCommand.Name
+				URI = 'https://telemetry.tatux.in/api/telemetry'
+			}
+			if ($CurrentConfig.BasicTelemetry -eq 'True') {
+				$TelmetryArgs.Add('Minimal', $true)
+			}
+			Invoke-TelemetryCollection @TelmetryArgs -Stage start -ClearTimer
+        } catch {
+            Write-Verbose "Failed to load telemetry"
+        }
         $FunctionPath = $(Join-Path -Path $(Split-Path -Path $PSCommandPath -Parent) -ChildPath "Dependencies")
         try {
             Add-Type -Path "$FunctionPath\itextsharp.dll" -ErrorAction Stop
@@ -83,7 +99,7 @@ function Search-PDFDoc {
     }
     PROCESS {
         # Search for queried text
-
+        Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'
         foreach ($Q in $Query) {
             for ($Page = 1 ; $Page -le $PDFReader.NumberOfPages ; $Page++) {
                 Try {
@@ -95,6 +111,7 @@ function Search-PDFDoc {
                     $Obj.Query = $Q
                     $Obj.Page = $Page
                     $Obj
+                    Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception $_
                     break
                 }
                 $LineCount = 1
@@ -130,5 +147,6 @@ function Search-PDFDoc {
         [gc]::collect()
 		
         [gc]::WaitForPendingFinalizers()
+        Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer
     }
 }

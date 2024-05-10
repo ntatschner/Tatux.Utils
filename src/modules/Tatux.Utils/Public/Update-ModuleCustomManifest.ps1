@@ -11,6 +11,23 @@ function Update-ModuleCustomManifest {
             })]
             [string]$Path
         )
+        try {
+            $CurrentConfig = Get-ModuleConfig
+			$TelmetryArgs = @{
+				ModuleName = $CurrentConfig.ModuleName
+				ModulePath = $CurrentConfig.ModulePath
+				ModuleVersion = $CurrentConfig.ModuleVersion
+				CommandName = $MyInvocation.MyCommand.Name
+				URI = 'https://telemetry.tatux.in/api/telemetry'
+			}
+			if ($CurrentConfig.BasicTelemetry -eq 'True') {
+				$TelmetryArgs.Add('Minimal', $true)
+			}
+			Invoke-TelemetryCollection @TelmetryArgs -Stage start -ClearTimer
+        } catch {
+            Write-Verbose "Failed to load telemetry"
+        }
+        Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'
         # Test if field CmdletsToExport exists in the manifest file
         $ManifestFileContent = Get-Content -Path $Path
         $ModuleRoot = Split-Path -Path $Path -Parent
@@ -25,6 +42,8 @@ function Update-ModuleCustomManifest {
             Set-Content -Path $Path -Value $ManifestFileContent
         } else {
             Write-Error "CmdletsToExport field could not be found in the manifest file."
+            Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception $_
             break
         }
+        Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer
 }
