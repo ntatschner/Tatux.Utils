@@ -52,7 +52,7 @@ function Search-PDFDoc {
 			$TelmetryArgs = @{
 				ModuleName = $CurrentConfig.ModuleName
 				ModulePath = $CurrentConfig.ModulePath
-				ModuleVersion = $CurrentConfig.ModuleVersion
+				ModuleVersion = $MyInvocation.MyCommand.Module.Version
 				CommandName = $MyInvocation.MyCommand.Name
 				URI = 'https://telemetry.tatux.in/api/telemetry'
 			}
