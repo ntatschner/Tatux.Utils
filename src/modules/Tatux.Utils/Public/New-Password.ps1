@@ -11,7 +11,7 @@
 	.NOTES
 		Additional information about the function.
 #>
-function Generate-Password {
+function New-Password {
 	[CmdletBinding()]
 	param
 	(
