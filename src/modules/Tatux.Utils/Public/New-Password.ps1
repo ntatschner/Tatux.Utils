@@ -31,7 +31,7 @@ function Generate-Password {
 			if ($CurrentConfig.BasicTelemetry -eq 'True') {
 				$TelmetryArgs.Add('Minimal', $true)
 			}
-			Invoke-TelemetryCollection @TelmetryArgs -Stage start -ClearTimer
+			Invoke-TelemetryCollection @TelmetryArgs -Stage Start -ClearTimer
         } catch {
             Write-Verbose "Failed to load telemetry"
         }
