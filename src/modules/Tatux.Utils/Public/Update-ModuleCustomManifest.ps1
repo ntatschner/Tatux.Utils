@@ -9,22 +9,29 @@ function Update-ModuleCustomManifest {
                     $true
                 }
             })]
-            [string]$Path
-        )
+        [string]$Path
+    )
+    begin {
+        # Generate execution ID
+        $ExecutionID = [System.Guid]::NewGuid().ToString()
+    }
+    process {
         try {
             $CurrentConfig = Get-ModuleConfig
-			$TelmetryArgs = @{
-				ModuleName = $CurrentConfig.ModuleName
-				ModulePath = $CurrentConfig.ModulePath
-				ModuleVersion = $MyInvocation.MyCommand.Module.Version
-				CommandName = $MyInvocation.MyCommand.Name
-				URI = 'https://telemetry.tatux.in/api/telemetry'
-			}
-			if ($CurrentConfig.BasicTelemetry -eq 'True') {
-				$TelmetryArgs.Add('Minimal', $true)
-			}
-			Invoke-TelemetryCollection @TelmetryArgs -Stage start -ClearTimer
-        } catch {
+            $TelmetryArgs = @{
+                ModuleName    = $CurrentConfig.ModuleName
+                ModulePath    = $CurrentConfig.ModulePath
+                ModuleVersion = $MyInvocation.MyCommand.Module.Version
+                ExecutionID   = $ExecutionID
+                CommandName   = $MyInvocation.MyCommand.Name
+                URI           = 'https://telemetry.tatux.in/api/telemetry'
+            }
+            if ($CurrentConfig.BasicTelemetry -eq 'True') {
+                $TelmetryArgs.Add('Minimal', $true)
+            }
+            Invoke-TelemetryCollection @TelmetryArgs -Stage start -ClearTimer
+        }
+        catch {
             Write-Verbose "Failed to load telemetry"
         }
         Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'
@@ -35,15 +42,17 @@ function Update-ModuleCustomManifest {
         if ([string]::IsNullOrEmpty($ManifestFileContent -match '[\s|\t]*CmdletsToExport\s*=.*') -eq $false) {
             $LineWithCmdletsToExport = $($ManifestFileContent | Select-String -Pattern '^[\s|\t]*CmdletsToExport\s*=(.*)$')
             $LineNumber = $LineWithCmdletsToExport.LineNumber - 1
-            $CmdletsToExport = $(Get-ChildItem -Path $PublicFunctions -Filter "*.ps1" | Where-Object {$_.Name -notlike "*.tests.ps1" } | % {'"' + $($_ | Select-Object -ExpandProperty BaseName) + '"' } ) -join ', '
+            $CmdletsToExport = $(Get-ChildItem -Path $PublicFunctions -Filter "*.ps1" | Where-Object { $_.Name -notlike "*.tests.ps1" } | % { '"' + $($_ | Select-Object -ExpandProperty BaseName) + '"' } ) -join ', '
             $NewLine = " @($CmdletsToExport)"
             Write-Output "Replacing line: $($LineWithCmdletsToExport.Matches.Groups[1].Value) with $NewLine"
             $ManifestFileContent[$LineNumber] = $ManifestFileContent[$LineNumber] -replace [regex]::Escape($LineWithCmdletsToExport.Matches.Groups[1].Value), $NewLine
             Set-Content -Path $Path -Value $ManifestFileContent
-        } else {
+        }
+        else {
             Write-Error "CmdletsToExport field could not be found in the manifest file."
             Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception $_
             break
         }
         Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer
+    }
 }

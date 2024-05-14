@@ -25,12 +25,15 @@ function Save-GitHubFile {
     )
     
     begin {
+        # Generate execution ID
+        $ExecutionID = [System.Guid]::NewGuid().ToString()
         try {
             $CurrentConfig = Get-ModuleConfig
 			$TelmetryArgs = @{
 				ModuleName = $CurrentConfig.ModuleName
 				ModulePath = $CurrentConfig.ModulePath
 				ModuleVersion = $MyInvocation.MyCommand.Module.Version
+                ExecutionID = $ExecutionID
 				CommandName = $MyInvocation.MyCommand.Name
 				URI = 'https://telemetry.tatux.in/api/telemetry'
 			}
