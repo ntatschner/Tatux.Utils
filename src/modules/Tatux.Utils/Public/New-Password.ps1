@@ -43,7 +43,7 @@ function New-Password {
 		Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'	
 		$SourceData = $NULL; For ($a = 33; $a –le 126; $a++) { $SourceData += , [char][byte]$a } # Converts numbers to legal character bytes for output
 	
-		For ($loop = 1; $loop –le $length; $loop++) {
+		For ($loop = 1; $loop -le $length; $loop++) {
 			# Loops for the amount of length specified
 		
 			$Password += ($SourceData | Get-Random) # Gets a random character from list and stores it for output
