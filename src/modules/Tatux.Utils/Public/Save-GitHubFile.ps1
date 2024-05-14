@@ -65,7 +65,6 @@ function Save-GitHubFile {
     }
     
     process {
-        Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'
         switch ($PSCmdlet.ParameterSetName) { 
             'Default' {
                 if ($URI.Segments.count -gt 1) {
@@ -99,6 +98,7 @@ function Save-GitHubFile {
                                         }
                                     } 
                                     else {
+                                        invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer
                                         break
                                     }
                                 }
@@ -119,6 +119,7 @@ function Save-GitHubFile {
                     Catch {
                         $_
                         invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception $_
+                        break
                     }
 
                 }
@@ -132,8 +133,8 @@ function Save-GitHubFile {
             }
             Default { }
         }
+        invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer
     }
-    
     end {
     }
 }

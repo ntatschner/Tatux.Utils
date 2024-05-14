@@ -39,8 +39,7 @@ function New-Password {
             Write-Verbose "Failed to load telemetry"
         }
 	}
-	process {
-		Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'	
+	process {	
 		$SourceData = $NULL; For ($a = 33; $a –le 126; $a++) { $SourceData += , [char][byte]$a } # Converts numbers to legal character bytes for output
 	
 		For ($loop = 1; $loop -le $length; $loop++) {

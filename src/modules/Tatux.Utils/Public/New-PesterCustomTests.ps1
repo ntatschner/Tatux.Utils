@@ -207,6 +207,7 @@ ExcludeRules=@('PSAvoidUsingInvokeExpression')
         catch {
             Write-Error "Failed to create the file $(Join-Path -Path $Destination -ChildPath 'PSScriptAnalyzerSettings.psd1')"
             Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer -Failed $true -Exception $_
+            break
         }
         Invoke-TelemetryCollection @TelmetryArgs -Stage End -ClearTimer
     }

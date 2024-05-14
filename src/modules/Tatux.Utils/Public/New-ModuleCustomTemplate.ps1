@@ -98,9 +98,7 @@ function New-ModuleCustomTemplate {
 		$GitIgnore = "$Templates\GitIgnore"
 	}
 	process {
-		Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'
 		foreach ($Name in $Names) {
-			Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'
 			$Directories = @(
 				'Classes'
 				'Public'

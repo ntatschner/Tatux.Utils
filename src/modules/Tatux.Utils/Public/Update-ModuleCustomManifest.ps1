@@ -34,7 +34,6 @@ function Update-ModuleCustomManifest {
         catch {
             Write-Verbose "Failed to load telemetry"
         }
-        Invoke-TelemetryCollection @TelmetryArgs -Stage 'In-Progress'
         # Test if field CmdletsToExport exists in the manifest file
         $ManifestFileContent = Get-Content -Path $Path
         $ModuleRoot = Split-Path -Path $Path -Parent
